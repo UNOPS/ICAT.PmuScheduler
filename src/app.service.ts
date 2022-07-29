@@ -7,6 +7,7 @@ import { Observable } from 'rxjs';
 import { Repository } from 'typeorm';
 import { Applicability } from './entity/applicability.entity';
 import { Country } from './entity/contry.entity';
+import { MethodologyData } from './entity/methodology-data.entity';
 import { Methodology } from './entity/methodology.entity';
 import { MitigationAction } from './entity/mitigation-action.entity';
 import { Sector } from './entity/sector.entity';
@@ -21,9 +22,6 @@ export class AppService {
    *
    */
   constructor(
-    @InjectRepository(Methodology)
-    private readonly methodologyRepository: Repository<Methodology>,
-
     @InjectRepository(Country)
     private readonly countryRepository: Repository<Country>,
 
@@ -35,6 +33,9 @@ export class AppService {
 
     @InjectRepository(Applicability)
     private readonly applicabilityRepository: Repository<Applicability>,
+    
+    @InjectRepository(MethodologyData)
+    private readonly methodologyDataRepository: Repository<MethodologyData>,
 
     private httpService: HttpService,
   ) {}
@@ -50,7 +51,8 @@ export class AppService {
     await this.syncMAction();
     await this.syncCountry();
     await this.syncSector();
-    await this.syncMethodology();
+    await this.syncMethodologyData();
+    // await this.syncMethodology();
   }
 
   async syncCountry(){
@@ -71,6 +73,32 @@ export class AppService {
             //item found Update;
             console.log('Update country');
             this.countryRepository.save(me);
+          }
+        }
+      });
+    });
+  }
+
+  async syncMethodologyData(){
+    let localMCountry = await this.methodologyDataRepository.find();
+    await this.getCountryFromServer('methodology-data').subscribe(async (m) => {
+      m.data.map((me) => {
+
+        if (me.uniqueIdentification) {
+          let exsistingItem = localMCountry.find(
+            (a) => a.uniqueIdentification === me.uniqueIdentification,
+          );
+
+          if (!exsistingItem) {
+            //item not found Insert
+            console.log('Insert country');
+
+            this.methodologyDataRepository.save(me);
+          } else {
+            //item found Update;
+            console.log('Update country');
+            // console.log(me);
+            this.methodologyDataRepository.save(me);
           }
         }
       });
@@ -150,38 +178,38 @@ export class AppService {
   }
 
 
-  async syncMethodology() {
-    let localMethodology = await this.methodologyRepository.find();
-    await this.getMetodlogyFromServer().subscribe(async (m) => {
-      m.data.map((me) => {
-        if (me.uniqueIdentification) {
-          let exsistingItem = localMethodology.find(
-            (a) => a.uniqueIdentification === me.uniqueIdentification,
-          );
+  // async syncMethodology() {
+  //   let localMethodology = await this.methodologyRepository.find();
+  //   await this.getMetodlogyFromServer().subscribe(async (m) => {
+  //     m.data.map((me) => {
+  //       if (me.uniqueIdentification) {
+  //         let exsistingItem = localMethodology.find(
+  //           (a) => a.uniqueIdentification === me.uniqueIdentification,
+  //         );
 
-          if (!exsistingItem) {
-            //item not found Insert
-            console.log('Insert');
+  //         if (!exsistingItem) {
+  //           //item not found Insert
+  //           console.log('Insert');
 
-            this.methodologyRepository.insert(me);
-          } else {
-            //item found Update;
-            console.log('Update');
-            this.methodologyRepository.save(me);
-          }
-        }
-      });
-    });
-  }
+  //           this.methodologyRepository.insert(me);
+  //         } else {
+  //           //item found Update;
+  //           console.log('Update');
+  //           this.methodologyRepository.save(me);
+  //         }
+  //       }
+  //     });
+  //   });
+  // }
 
-  getMetodlogyFromServer(): Observable<AxiosResponse<any>> {
-    try {
-      let methodologuURL = this.calculationEngineBaseURl + 'methodology';
-      return this.httpService.get(methodologuURL);
-    } catch (e) {
-      console.log('calculation Engine error', e);
-    }
-  }
+  // getMetodlogyFromServer(): Observable<AxiosResponse<any>> {
+  //   try {
+  //     let methodologuURL = this.calculationEngineBaseURl + 'methodology';
+  //     return this.httpService.get(methodologuURL);
+  //   } catch (e) {
+  //     console.log('calculation Engine error', e);
+  //   }
+  // }
 
   getCountryFromServer(name:string): Observable<AxiosResponse<any>> {
     try {

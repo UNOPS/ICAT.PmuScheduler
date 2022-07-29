@@ -6,6 +6,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { Applicability } from './entity/applicability.entity';
 import { Country } from './entity/contry.entity';
+import { MethodologyData } from './entity/methodology-data.entity';
 import { Methodology } from './entity/methodology.entity';
 import { MitigationAction } from './entity/mitigation-action.entity';
 import { Sector } from './entity/sector.entity';
@@ -25,11 +26,24 @@ import { Sector } from './entity/sector.entity';
       username: 'root',
       password: '',
       database: 'icat_pmu',
-      entities: [Applicability,Country,Methodology,MitigationAction,Sector],
+      entities: [Applicability,
+        Country,
+        Methodology,
+        MitigationAction,
+        Sector,
+        MethodologyData,
+      ],
 
       synchronize: false,
     }),
-    TypeOrmModule.forFeature([Applicability,Country,Methodology,MitigationAction,Sector]),
+    TypeOrmModule.forFeature([
+      Applicability,
+      Country,
+      Methodology,
+      MitigationAction,
+      Sector,
+      MethodologyData
+    ]),
     HttpModule,
   ],
   controllers: [AppController],
