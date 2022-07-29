@@ -43,6 +43,9 @@ export class Country extends BaseTrackingEntity{
   isSystemUse: boolean;
 
   @Column({ default: null })
+  isCA: boolean;
+
+  @Column({ default: null })
   flagPath: string;
 
   @Column({ default: null })
@@ -66,4 +69,16 @@ export class Country extends BaseTrackingEntity{
 
   @Column({ default: null })
   institutionId: string;
+
+  @Column({ default: null })
+  climateActionModule: boolean;
+
+  @Column({ default: null })
+  ghgModule: boolean;
+
+  @Column({ default: null })
+  macModule: boolean;
+
+  @Column({ default: null })
+  dataCollectionModule: boolean;
 }
