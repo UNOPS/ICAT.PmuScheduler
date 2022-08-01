@@ -61,4 +61,20 @@ export class MethodologyData extends BaseTrackingEntity {
     @JoinColumn({ name: 'applicabilityId' })
     applicability?: Applicability;
 
+
+    @Column({ default: null })
+    baselineImage: string;
+
+    @Column({ default: null })
+    projectImage: string;
+
+    @Column({ default: null })
+    projectionImage: string;
+
+    @Column({ default: null })
+    leakageImage: string;
+
+    @Column({ default: null })
+    resultImage: string;
+
 }
