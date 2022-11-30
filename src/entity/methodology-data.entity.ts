@@ -9,6 +9,7 @@ import { Sector } from './sector.entity';
 
 @Entity()
 export class MethodologyData extends BaseTrackingEntity {
+    
 
     @PrimaryGeneratedColumn()
     id: number;
