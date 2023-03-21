@@ -10,8 +10,6 @@ import { Methodology } from './entity/methodology.entity';
 import { MitigationAction } from './entity/mitigation-action.entity';
 import { Sector } from './entity/sector.entity';
 
-// https://docs.nestjs.com/techniques/task-scheduling
-
 @Module({
   imports: [
     ScheduleModule.forRoot(),
@@ -22,10 +20,16 @@ import { Sector } from './entity/sector.entity';
       username: process.env.DATABASE_USER,
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,
-      entities: [Applicability,Country,Methodology,MitigationAction,Sector],
+      entities: [Applicability, Country, Methodology, MitigationAction, Sector],
       synchronize: false,
     }),
-    TypeOrmModule.forFeature([Applicability,Country,Methodology,MitigationAction,Sector]),
+    TypeOrmModule.forFeature([
+      Applicability,
+      Country,
+      Methodology,
+      MitigationAction,
+      Sector,
+    ]),
     HttpModule,
   ],
   controllers: [AppController],
