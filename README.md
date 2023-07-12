@@ -1,73 +1,100 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo_text.svg" width="320" alt="Nest Logo" /></a>
-</p>
+# TraCAD - PMU Scheduler
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Backend service for ICAT Climate Action Assessment Tool for Transport Sector - TraCAD. This application synchronize the PMU database with the Calculation Engine database using CRON jobs.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+Supported by [Initiative for Climate Action Transparency - ICAT](https://climateactiontransparency.org/).
 
-## Description
+Built using [Node.js 18](https://nodejs.org/dist/latest-v18.x/docs/api/) and [Nest](https://github.com/nestjs/nest) framework.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Database Configuration
 
-## Installation
+This application uses a [MySQL Database](https://www.mysql.com/). The `ICAT-PMU.sql` configuration file containing the database schema and some dummy data is provided in the PMUPortalService repository.
+
+## Manual Installation
+
+1. Download and install the [Node.js 18 LTS version](https://nodejs.org/en/download) for your operational system.
+
+2. Download or clone this repository.
+
+3. In the terminal, go to this repository's main folder.
+
+4. Install the NPM dependencies (including Nest) with the command:
 
 ```bash
-$ npm install
+$ npm install --force
 ```
 
-## Running the app
+5. Set up the Environment Variables
+
+   - **Windows:** using the `set` command in the terminal
+   - **Linux/MacOS:** using the `export` command in the terminal
+
+6. Run the app:
 
 ```bash
-# development
 $ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
 ```
 
-## Test
+## Google Cloud Installation with Docker
+
+> This is an example cloud installation using [Docker](https://www.docker.com/) and Google Cloud Plataform. The provided `Dockerfile` can be used for local or cloud installation with different services.
+
+1. In GCP Console, go to [Artifact Registry](https://console.cloud.google.com/artifacts) and enable the Artifact Registry API
+
+2. In the Artifact Registry, create a new repository:
+
+   - **Format:** Docker
+   - **Type:** Standard
+   - **Location:** desired application location
+   - **Encryption:** Google-managed key
+
+3. Download and install [gcloud CLI](https://cloud.google.com/sdk/docs/install).
+
+4. Download or clone this repository.
+
+5. In the terminal, go to this repository's main folder.
+
+6. Build your container in the Artifacts Register using the provided `Dockerfile`. The container path can be found on the Artifact Registry's repository page.
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+$ gcloud builds submit --tag [CONTAINER PATH]
 ```
 
-## Support
+7. Go to [Cloud Run](https://console.cloud.google.com/run) and create a New Service:
+   - Choose the option `Deploy one revision from an existing container image` and select the container image updated in the previous step
+   - Add a service name
+   - Select the application region
+   - Select `Allow unauthenticated invocations` in the Authentication option
+   - In the **Container section**:
+     - Select Container port 8084
+     - Add the Environment Variables
+     - Add the Cloud SQL connections
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+> Noticed that some [special permissions in GCP](https://cloud.google.com/run/docs/reference/iam/roles#additional-configuration) can be necessary to perform these tasks.
 
-## Stay in touch
+## Environment Variables
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+The environment variables should be declared as follow:
+
+| Variable name         | Description            |
+| --------------------- | ---------------------- | --- |
+| `SOCKET_PATH`         | Database Socket Path   |
+| `DATABASE_PORT`       | Database Port          |
+| `DATABASE_USER`       | Database Socket User   |
+| `DATABASE_PASSWORD`   | Database Password      |
+| `DATABASE_NAME`       | Database Name          |
+| `CAL_ENGINE_BASE_URL` | Calculation Engine URL |     |
+
+## Dependencies
+
+This application consumes data from CalculationEngine application API and updates the shared database.
+
+The complete dependency diagram of TraCAD Country and PMU applications:
+
+<p align="left">
+  <img src="https://lucid.app/publicSegments/view/9a6fb822-be5a-47d7-ad67-0434a4025234/image.png" width="800" alt="TraCAD Diagram" /></a>
+</p>
 
 ## License
 
-Nest is [MIT licensed](LICENSE).
+TraCAD - CountryPortalService is [Affero GPL licensed](https://www.gnu.org/licenses/agpl-3.0.en.html).
