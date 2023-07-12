@@ -24,7 +24,7 @@ import { Sector } from './entity/sector.entity';
       // password: 'password',
       //database: 'nccdsndb',
       username: 'root',
-      password: 'pradeep123#',
+      password: '',
       database: 'icat_pmu',
       entities: [Applicability,
         Country,
