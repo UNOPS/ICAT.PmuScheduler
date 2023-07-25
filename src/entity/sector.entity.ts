@@ -16,12 +16,6 @@ export class Sector extends BaseTrackingEntity {
     sortOrder: number;
 
 
-    // @Column({ default: null })
-    // emissionSummary: string;
-
-    // @Column({ default: null })
-    // ndcDocuments: string;
-
     @Column({ default: null })
     uniqueIdentification: string;
 }

@@ -2,9 +2,7 @@ import { Column } from 'typeorm';
 import { ApiProperty, ApiBody } from '@nestjs/swagger';
 
 export abstract class BaseTrackingEntity {
-  /**
-   *
-   */
+
   constructor() {
     this.createdBy = '-';
     this.createdOn = new Date();

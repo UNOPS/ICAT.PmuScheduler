@@ -15,12 +15,9 @@ import { Sector } from './entity/sector.entity';
 @Injectable()
 export class AppService {
   private readonly logger = new Logger(AppService.name);
-  private readonly calculationEngineBaseURl = 'http://35.154.205.109:3600/';
-  // private readonly pmuBaseURl = 'http://35.154.205.109:7081/';
+  private readonly calculationEngineBaseURl = process.env.CAL_ENGINE_BASE_URL;
 
-  /**
-   *
-   */
+
   constructor(
     @InjectRepository(Country)
     private readonly countryRepository: Repository<Country>,
@@ -52,7 +49,6 @@ export class AppService {
     await this.syncCountry();
     await this.syncSector();
     await this.syncMethodologyData();
-    // await this.syncMethodology();
   }
 
   async syncCountry(){
@@ -65,13 +61,9 @@ export class AppService {
           );
 
           if (!exsistingItem) {
-            //item not found Insert
-            console.log('Insert country');
 
             this.countryRepository.save(me);
           } else {
-            //item found Update;
-            console.log('Update country');
             this.countryRepository.save(me);
           }
         }
@@ -90,14 +82,8 @@ export class AppService {
           );
 
           if (!exsistingItem) {
-            //item not found Insert
-            console.log('Insert country');
-
             this.methodologyDataRepository.save(me);
           } else {
-            //item found Update;
-            console.log('Update country');
-            // console.log(me);
             this.methodologyDataRepository.save(me);
           }
         }
@@ -115,13 +101,8 @@ export class AppService {
           );
 
           if (!exsistingItem) {
-            //item not found Insert
-            console.log('Insert sector');
-
             this.sectorRepository.save(me);
           } else {
-            //item found Update;
-            console.log('Update sector');
             this.sectorRepository.save(me);
           }
         }
@@ -139,13 +120,8 @@ export class AppService {
           );
 
           if (!exsistingItem) {
-            //item not found Insert
-            console.log('Insert applicability');
-
             this.applicabilityRepository.save(me);
           } else {
-            //item found Update;
-            console.log('Update applicability');
             this.applicabilityRepository.save(me);
           }
         }
@@ -163,13 +139,9 @@ export class AppService {
           );
 
           if (!exsistingItem) {
-            //item not found Insert
-            console.log('Insert mitigation-action');
 
             this.mitidationActionRepository.save(me);
           } else {
-            //item found Update;
-            console.log('Update mitigation-action');
             this.mitidationActionRepository.save(me);
           }
         }
@@ -178,46 +150,12 @@ export class AppService {
   }
 
 
-  // async syncMethodology() {
-  //   let localMethodology = await this.methodologyRepository.find();
-  //   await this.getMetodlogyFromServer().subscribe(async (m) => {
-  //     m.data.map((me) => {
-  //       if (me.uniqueIdentification) {
-  //         let exsistingItem = localMethodology.find(
-  //           (a) => a.uniqueIdentification === me.uniqueIdentification,
-  //         );
-
-  //         if (!exsistingItem) {
-  //           //item not found Insert
-  //           console.log('Insert');
-
-  //           this.methodologyRepository.insert(me);
-  //         } else {
-  //           //item found Update;
-  //           console.log('Update');
-  //           this.methodologyRepository.save(me);
-  //         }
-  //       }
-  //     });
-  //   });
-  // }
-
-  // getMetodlogyFromServer(): Observable<AxiosResponse<any>> {
-  //   try {
-  //     let methodologuURL = this.calculationEngineBaseURl + 'methodology';
-  //     return this.httpService.get(methodologuURL);
-  //   } catch (e) {
-  //     console.log('calculation Engine error', e);
-  //   }
-  // }
 
   getCountryFromServer(name:string): Observable<AxiosResponse<any>> {
     try {
       let countryURL = this.calculationEngineBaseURl + name;
-      console.log(countryURL)
       return this.httpService.get(countryURL);
     } catch (e) {
-      console.log('calculation Engine error', e);
     }
   }
 }
