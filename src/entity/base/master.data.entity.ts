@@ -2,6 +2,7 @@ import { Column, PrimaryGeneratedColumn } from 'typeorm';
 import { BaseTrackingEntity } from './base.tracking.entity';
 
 export abstract class MasterData extends BaseTrackingEntity {
+
   constructor() {
     super();
   }

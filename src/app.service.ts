@@ -7,6 +7,7 @@ import { Observable } from 'rxjs';
 import { Repository } from 'typeorm';
 import { Applicability } from './entity/applicability.entity';
 import { Country } from './entity/contry.entity';
+import { MethodologyData } from './entity/methodology-data.entity';
 import { Methodology } from './entity/methodology.entity';
 import { MitigationAction } from './entity/mitigation-action.entity';
 import { Sector } from './entity/sector.entity';
@@ -16,10 +17,8 @@ export class AppService {
   private readonly logger = new Logger(AppService.name);
   private readonly calculationEngineBaseURl = process.env.CAL_ENGINE_BASE_URL;
 
-  constructor(
-    @InjectRepository(Methodology)
-    private readonly methodologyRepository: Repository<Methodology>,
 
+  constructor(
     @InjectRepository(Country)
     private readonly countryRepository: Repository<Country>,
 
@@ -31,6 +30,9 @@ export class AppService {
 
     @InjectRepository(Applicability)
     private readonly applicabilityRepository: Repository<Applicability>,
+    
+    @InjectRepository(MethodologyData)
+    private readonly methodologyDataRepository: Repository<MethodologyData>,
 
     private httpService: HttpService,
   ) {}
@@ -46,19 +48,20 @@ export class AppService {
     await this.syncMAction();
     await this.syncCountry();
     await this.syncSector();
-    await this.syncMethodology();
+    await this.syncMethodologyData();
   }
 
-  async syncCountry() {
-    const localMCountry = await this.countryRepository.find();
+  async syncCountry(){
+    let localMCountry = await this.countryRepository.find();
     await this.getCountryFromServer('country').subscribe(async (m) => {
       m.data.map((me) => {
         if (me.uniqueIdentification) {
-          const exsistingItem = localMCountry.find(
+          let exsistingItem = localMCountry.find(
             (a) => a.uniqueIdentification === me.uniqueIdentification,
           );
 
           if (!exsistingItem) {
+
             this.countryRepository.save(me);
           } else {
             this.countryRepository.save(me);
@@ -68,12 +71,32 @@ export class AppService {
     });
   }
 
-  async syncSector() {
-    const localMCountry = await this.sectorRepository.find();
+  async syncMethodologyData(){
+    let localMCountry = await this.methodologyDataRepository.find();
+    await this.getCountryFromServer('methodology-data').subscribe(async (m) => {
+      m.data.map((me) => {
+
+        if (me.uniqueIdentification) {
+          let exsistingItem = localMCountry.find(
+            (a) => a.uniqueIdentification === me.uniqueIdentification,
+          );
+
+          if (!exsistingItem) {
+            this.methodologyDataRepository.save(me);
+          } else {
+            this.methodologyDataRepository.save(me);
+          }
+        }
+      });
+    });
+  }
+
+  async syncSector(){
+    let localMCountry = await this.sectorRepository.find();
     await this.getCountryFromServer('sector').subscribe(async (m) => {
       m.data.map((me) => {
         if (me.uniqueIdentification) {
-          const exsistingItem = localMCountry.find(
+          let exsistingItem = localMCountry.find(
             (a) => a.uniqueIdentification === me.uniqueIdentification,
           );
 
@@ -87,12 +110,12 @@ export class AppService {
     });
   }
 
-  async syncApplicability() {
-    const localMCountry = await this.applicabilityRepository.find();
+  async syncApplicability(){
+    let localMCountry = await this.applicabilityRepository.find();
     await this.getCountryFromServer('applicability').subscribe(async (m) => {
       m.data.map((me) => {
         if (me.uniqueIdentification) {
-          const exsistingItem = localMCountry.find(
+          let exsistingItem = localMCountry.find(
             (a) => a.uniqueIdentification === me.uniqueIdentification,
           );
 
@@ -106,57 +129,33 @@ export class AppService {
     });
   }
 
-  async syncMAction() {
-    const localMCountry = await this.mitidationActionRepository.find();
-    await this.getCountryFromServer('mitigation-action').subscribe(
-      async (m) => {
-        m.data.map((me) => {
-          if (me.uniqueIdentification) {
-            const exsistingItem = localMCountry.find(
-              (a) => a.uniqueIdentification === me.uniqueIdentification,
-            );
-
-            if (!exsistingItem) {
-              this.mitidationActionRepository.save(me);
-            } else {
-              this.mitidationActionRepository.save(me);
-            }
-          }
-        });
-      },
-    );
-  }
-
-  async syncMethodology() {
-    const localMethodology = await this.methodologyRepository.find();
-    await this.getMetodlogyFromServer().subscribe(async (m) => {
+  async syncMAction(){
+    let localMCountry = await this.mitidationActionRepository.find();
+    await this.getCountryFromServer('mitigation-action').subscribe(async (m) => {
       m.data.map((me) => {
         if (me.uniqueIdentification) {
-          const exsistingItem = localMethodology.find(
+          let exsistingItem = localMCountry.find(
             (a) => a.uniqueIdentification === me.uniqueIdentification,
           );
 
           if (!exsistingItem) {
-            this.methodologyRepository.insert(me);
+
+            this.mitidationActionRepository.save(me);
           } else {
-            this.methodologyRepository.save(me);
+            this.mitidationActionRepository.save(me);
           }
         }
       });
     });
   }
 
-  getMetodlogyFromServer(): Observable<AxiosResponse<any>> {
-    try {
-      const methodologuURL = this.calculationEngineBaseURl + 'methodology';
-      return this.httpService.get(methodologuURL);
-    } catch (e) {}
-  }
 
-  getCountryFromServer(name: string): Observable<AxiosResponse<any>> {
+
+  getCountryFromServer(name:string): Observable<AxiosResponse<any>> {
     try {
-      const countryURL = this.calculationEngineBaseURl + name;
+      let countryURL = this.calculationEngineBaseURl + name;
       return this.httpService.get(countryURL);
-    } catch (e) {}
+    } catch (e) {
+    }
   }
 }

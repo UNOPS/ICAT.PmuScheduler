@@ -1,4 +1,5 @@
-export enum countryStatus {
-  Active = 'Active',
-  Deactivated = 'Deactivated',
+export enum countryStatus
+{
+    Active = "Active",
+    Deactivated = "Deactivated",
 }

@@ -6,9 +6,12 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { Applicability } from './entity/applicability.entity';
 import { Country } from './entity/contry.entity';
+import { MethodologyData } from './entity/methodology-data.entity';
 import { Methodology } from './entity/methodology.entity';
 import { MitigationAction } from './entity/mitigation-action.entity';
 import { Sector } from './entity/sector.entity';
+
+// https://docs.nestjs.com/techniques/task-scheduling
 
 @Module({
   imports: [
@@ -20,7 +23,14 @@ import { Sector } from './entity/sector.entity';
       username: process.env.DATABASE_USER,
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,
-      entities: [Applicability, Country, Methodology, MitigationAction, Sector],
+      entities: [Applicability,
+        Country,
+        Methodology,
+        MitigationAction,
+        Sector,
+        MethodologyData,
+      ],
+
       synchronize: false,
     }),
     TypeOrmModule.forFeature([
@@ -29,6 +39,7 @@ import { Sector } from './entity/sector.entity';
       Methodology,
       MitigationAction,
       Sector,
+      MethodologyData
     ]),
     HttpModule,
   ],
