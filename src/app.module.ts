@@ -11,8 +11,6 @@ import { Methodology } from './entity/methodology.entity';
 import { MitigationAction } from './entity/mitigation-action.entity';
 import { Sector } from './entity/sector.entity';
 
-// https://docs.nestjs.com/techniques/task-scheduling
-
 @Module({
   imports: [
     ScheduleModule.forRoot(),
